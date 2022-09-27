@@ -20,22 +20,34 @@ using System.IO;
  */
 
 // Yea boi it's first LonaRPG launcher!
+// Und ja, all code logic writen in one file.
+// So, there exist shity code. Sorry.
+
 namespace NyxLauncher
 {
+
     public partial class NyxLauncher : Form
     {
+#if DEBUG
+        readonly bool DEBUG = true;
+#else
+        readonly bool DEBUG = false;
+#endif
 
         // Main game folder info
-        private string m_gamePath;
-        private string m_modScriptsPath;
-        private Image m_imgCheckBox = global::NyxLauncher.Properties.Resources.istoggle3;
+        private string m_gamePath           ;
+        private string m_modScriptsPath     ;
+        private FileSystemWatcher m_watcher ;
+        private Image m_imgCheckBox = 
+            global::NyxLauncher.Properties.Resources.istoggle3;
 
-        private string m_gameExeName = "Game.exe";
-        private string m_modFoldName = "ModScripts";
+        // Small define
+        private string m_gameExeName = "Game.exe"   ;
+        private string m_modFoldName = "ModScripts" ;
 
         // mem buffer
-        private Panel m_oldPanel;
-        private Panel m_panelSelect;
+        private Panel m_oldPanel    ;
+        private Panel m_panelSelect ;
 
         public NyxLauncher()
         {
@@ -43,6 +55,81 @@ namespace NyxLauncher
         }
 
         private void NyxLauncher_Load(object sender, EventArgs e)
+        {
+            if (DEBUG)
+                Console.WriteLine("DEBUG MODE - TOGGLE ON!!!");
+
+            if (Properties.Settings.Default.GAME_PATH != "null")
+            {
+                m_gamePath = Properties.Settings.Default.GAME_PATH;
+                m_modScriptsPath = Properties.Settings.Default.MOD_PATH;
+
+                Button m_pathButton = (Button)this.Controls[1];
+                m_pathButton.Text = m_gamePath;
+
+                // Create file watcher
+                CreateFolderWatcher();
+            }
+
+        }
+
+        // Create file watcher
+        private void CreateFolderWatcher()
+        {
+            // Delete exist's file watcher
+            if (m_watcher != null)
+            {
+                m_watcher = null;
+                GC.Collect();
+            }
+
+            // So, now we create new object
+            m_watcher = new FileSystemWatcher(m_modScriptsPath);
+            // Filter?
+            m_watcher.NotifyFilter = NotifyFilters.Attributes
+                                 | NotifyFilters.CreationTime
+                                 | NotifyFilters.DirectoryName
+                                 | NotifyFilters.FileName
+                                 | NotifyFilters.LastAccess
+                                 | NotifyFilters.LastWrite
+                                 | NotifyFilters.Security
+                                 | NotifyFilters.Size;
+            // Events
+            m_watcher.Changed += OnWatcherChanged;
+            m_watcher.Created += OnWatcherCreated;
+            m_watcher.Deleted += OnWatcherDeleted;
+            m_watcher.Renamed += OnWatcherRenamed;
+            // Idk realy
+            m_watcher.Filter = "*.rb";
+            m_watcher.IncludeSubdirectories = false;
+            m_watcher.EnableRaisingEvents = true;
+        }
+
+        private void ChangeFolderWatcher()
+        {
+            CreateFolderWatcher();
+        }
+
+        // file changed
+        private void OnWatcherChanged(object sender, FileSystemEventArgs e)
+        {
+
+        }
+
+        // file Created
+        private void OnWatcherCreated(object sender, FileSystemEventArgs e)
+        {
+
+        }
+
+        // file Deleted
+        private void OnWatcherDeleted(object sender, FileSystemEventArgs e)
+        {
+
+        }
+
+        // file Renamed
+        private void OnWatcherRenamed(object sender, FileSystemEventArgs e)
         {
 
         }
@@ -64,8 +151,14 @@ namespace NyxLauncher
                 string isGameExe = _path[_path.Length-1];
 
                 if (isGameExe != m_gameExeName)
-                    return;
+                {
+                    Button _pathButton = (Button)this.Controls[1];
+                    _pathButton.Text = "No find 'Game.exe'!";
 
+                    return;
+                }
+
+                // Set game path (for exe file)
                 m_gamePath = openFileDialog1.FileName;
 
                 // So, again (dirty method, but nevermind)
@@ -77,6 +170,15 @@ namespace NyxLauncher
                 // So, now we change button text
                 Button m_pathButton = (Button)this.Controls[1];
                 m_pathButton.Text = m_gamePath;
+
+                // Save config
+                Properties.Settings.Default.GAME_PATH       = m_gamePath        ;
+                Properties.Settings.Default.MOD_PATH        = m_modScriptsPath  ;
+
+                Properties.Settings.Default.Save();
+
+                // Change folder watcher
+                ChangeFolderWatcher();
             }
         }
 

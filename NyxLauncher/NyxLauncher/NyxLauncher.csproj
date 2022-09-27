@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>heart.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CModRow.cs" />
     <Compile Include="NyxLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\istoggle3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="heart.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -110,6 +110,7 @@ namespace NyxLauncher
             this.ModPanel.Name = "ModPanel";
             this.ModPanel.Size = new System.Drawing.Size(260, 30);
             this.ModPanel.TabIndex = 7;
+            this.ModPanel.Visible = false;
             this.ModPanel.Click += new System.EventHandler(this.OnLabelSelect);
             this.ModPanel.MouseEnter += new System.EventHandler(this.OnLabelMouseEnter);
             this.ModPanel.MouseLeave += new System.EventHandler(this.OnLabelMouseLeave);

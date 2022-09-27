@@ -37,6 +37,7 @@ namespace NyxLauncher
         // Main game folder info
         private string m_gamePath           ;
         private string m_modScriptsPath     ;
+
         private FileSystemWatcher m_watcher ;
         private Image m_imgCheckBox = 
             global::NyxLauncher.Properties.Resources.istoggle3;
@@ -49,6 +50,8 @@ namespace NyxLauncher
         private Panel m_oldPanel    ;
         private Panel m_panelSelect ;
 
+        private CModRow[] m_rows;
+
         public NyxLauncher()
         {
             InitializeComponent();
@@ -58,6 +61,9 @@ namespace NyxLauncher
         {
             if (DEBUG)
                 Console.WriteLine("DEBUG MODE - TOGGLE ON!!!");
+
+            CModRow d = new CModRow();
+            d = null;
 
             if (Properties.Settings.Default.GAME_PATH != "null")
             {
@@ -86,21 +92,21 @@ namespace NyxLauncher
             // So, now we create new object
             m_watcher = new FileSystemWatcher(m_modScriptsPath);
             // Filter?
-            m_watcher.NotifyFilter = NotifyFilters.Attributes
-                                 | NotifyFilters.CreationTime
-                                 | NotifyFilters.DirectoryName
-                                 | NotifyFilters.FileName
-                                 | NotifyFilters.LastAccess
-                                 | NotifyFilters.LastWrite
-                                 | NotifyFilters.Security
-                                 | NotifyFilters.Size;
+            m_watcher.NotifyFilter = //NotifyFilters.Attributes
+                                 //| NotifyFilters.CreationTime
+                                  NotifyFilters.DirectoryName
+                                 | NotifyFilters.FileName;
+                                 //| NotifyFilters.LastAccess
+                                 //| NotifyFilters.LastWrite
+                                 //| NotifyFilters.Security
+                                 //| NotifyFilters.Size;
             // Events
             m_watcher.Changed += OnWatcherChanged;
             m_watcher.Created += OnWatcherCreated;
             m_watcher.Deleted += OnWatcherDeleted;
             m_watcher.Renamed += OnWatcherRenamed;
             // Idk realy
-            m_watcher.Filter = "*.rb";
+            m_watcher.Filter = "";   // Check all files
             m_watcher.IncludeSubdirectories = false;
             m_watcher.EnableRaisingEvents = true;
         }
@@ -113,25 +119,30 @@ namespace NyxLauncher
         // file changed
         private void OnWatcherChanged(object sender, FileSystemEventArgs e)
         {
+            if (DEBUG)
+                Console.WriteLine(e.Name);
 
         }
 
         // file Created
         private void OnWatcherCreated(object sender, FileSystemEventArgs e)
         {
-
+            if (DEBUG)
+                Console.WriteLine(e.Name);
         }
 
         // file Deleted
         private void OnWatcherDeleted(object sender, FileSystemEventArgs e)
         {
-
+            if (DEBUG)
+                Console.WriteLine(e.Name);
         }
 
         // file Renamed
         private void OnWatcherRenamed(object sender, FileSystemEventArgs e)
         {
-
+            if (DEBUG)
+                Console.WriteLine(e.Name);
         }
 
         // Change game folder
@@ -191,6 +202,9 @@ namespace NyxLauncher
         // Check box event handler
         private void OnToggleBoxChanged(object sender, EventArgs e)
         {
+            if (DEBUG)
+                Console.WriteLine("CheckBox pressed");
+
             Button _checkBox = (Button)sender;
             
             if ((bool)_checkBox.Tag == true)

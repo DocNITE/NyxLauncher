@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
 [assembly: AssemblyTitle("NyxLauncher")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("LonaRPG's mod launcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("DocNight aka DogNigga hentai player")]
 [assembly: AssemblyProduct("NyxLauncher")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]

@@ -14,6 +14,9 @@ using System.IO;
  * Not focus text size: 220width
  * In focus text size : 170width
  * 
+ * Start location: 6; 25
+ * 
+ * Row length: 10 
  */
 
 // Yea boi it's first LonaRPG launcher!
@@ -24,7 +27,11 @@ namespace NyxLauncher
 
         // Main game folder info
         private string m_gamePath;
+        private string m_modScriptsPath;
         private Image m_imgCheckBox = global::NyxLauncher.Properties.Resources.istoggle3;
+
+        private string m_gameExeName = "Game.exe";
+        private string m_modFoldName = "ModScripts";
 
         // mem buffer
         private Panel m_oldPanel;
@@ -51,9 +58,25 @@ namespace NyxLauncher
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                Button m_pathButton = (Button)this.Controls[1];
-                m_pathButton.Text = openFileDialog1.FileName;
+
+                // So, now we need check - exist's lonarpg exe or not
+                string[] _path = openFileDialog1.FileName.Split('\\');
+                string isGameExe = _path[_path.Length-1];
+
+                if (isGameExe != m_gameExeName)
+                    return;
+
                 m_gamePath = openFileDialog1.FileName;
+
+                // So, again (dirty method, but nevermind)
+                int _num = (m_gamePath.Length - m_gameExeName.Length);
+                string _pathMod = m_gamePath.Substring(0, _num);
+
+                m_modScriptsPath = _pathMod + m_modFoldName;
+
+                // So, now we change button text
+                Button m_pathButton = (Button)this.Controls[1];
+                m_pathButton.Text = m_gamePath;
             }
         }
 

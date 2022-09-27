@@ -108,7 +108,7 @@ namespace NyxLauncher
             this.ModPanel.Controls.Add(this.ScrollPanel);
             this.ModPanel.Location = new System.Drawing.Point(6, 25);
             this.ModPanel.Name = "ModPanel";
-            this.ModPanel.Size = new System.Drawing.Size(259, 30);
+            this.ModPanel.Size = new System.Drawing.Size(260, 30);
             this.ModPanel.TabIndex = 7;
             this.ModPanel.Click += new System.EventHandler(this.OnLabelSelect);
             this.ModPanel.MouseEnter += new System.EventHandler(this.OnLabelMouseEnter);
@@ -146,7 +146,7 @@ namespace NyxLauncher
             this.ScrollPanel.Controls.Add(this.PriDown);
             this.ScrollPanel.Location = new System.Drawing.Point(208, 3);
             this.ScrollPanel.Name = "ScrollPanel";
-            this.ScrollPanel.Size = new System.Drawing.Size(72, 24);
+            this.ScrollPanel.Size = new System.Drawing.Size(52, 24);
             this.ScrollPanel.TabIndex = 7;
             this.ScrollPanel.Visible = false;
             // 

@@ -97,7 +97,7 @@ namespace NyxLauncher
             this.PathButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.ImageBox = new System.Windows.Forms.GroupBox();
-            this.Image = new System.Windows.Forms.PictureBox();
+            this.Image1 = new System.Windows.Forms.PictureBox();
             this.TextBox = new System.Windows.Forms.GroupBox();
             this.TextLabel = new System.Windows.Forms.Label();
             this.ScrollPanelDown = new System.Windows.Forms.Button();
@@ -127,7 +127,7 @@ namespace NyxLauncher
             this.ModPanel_9.SuspendLayout();
             this.panel18.SuspendLayout();
             this.ImageBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Image)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Image1)).BeginInit();
             this.TextBox.SuspendLayout();
             this.ScrollBoard.SuspendLayout();
             this.SuspendLayout();
@@ -1025,7 +1025,7 @@ namespace NyxLauncher
             // ImageBox
             // 
             this.ImageBox.BackColor = System.Drawing.Color.Transparent;
-            this.ImageBox.Controls.Add(this.Image);
+            this.ImageBox.Controls.Add(this.Image1);
             this.ImageBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ImageBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ImageBox.ForeColor = System.Drawing.SystemColors.Info;
@@ -1035,14 +1035,14 @@ namespace NyxLauncher
             this.ImageBox.TabIndex = 12;
             this.ImageBox.TabStop = false;
             // 
-            // Image
+            // Image1
             // 
-            this.Image.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.Image.Location = new System.Drawing.Point(6, 15);
-            this.Image.Name = "Image";
-            this.Image.Size = new System.Drawing.Size(536, 166);
-            this.Image.TabIndex = 0;
-            this.Image.TabStop = false;
+            this.Image1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Image1.Location = new System.Drawing.Point(6, 15);
+            this.Image1.Name = "Image1";
+            this.Image1.Size = new System.Drawing.Size(536, 166);
+            this.Image1.TabIndex = 0;
+            this.Image1.TabStop = false;
             // 
             // TextBox
             // 
@@ -1183,7 +1183,7 @@ namespace NyxLauncher
             this.ModPanel_9.PerformLayout();
             this.panel18.ResumeLayout(false);
             this.ImageBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Image)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Image1)).EndInit();
             this.TextBox.ResumeLayout(false);
             this.TextBox.PerformLayout();
             this.ScrollBoard.ResumeLayout(false);
@@ -1261,7 +1261,7 @@ namespace NyxLauncher
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         public System.Windows.Forms.GroupBox ImageBox;
-        private System.Windows.Forms.PictureBox Image;
+        private System.Windows.Forms.PictureBox Image1;
         public System.Windows.Forms.GroupBox TextBox;
         private System.Windows.Forms.Label TextLabel;
         private System.Windows.Forms.Button ScrollPanelDown;

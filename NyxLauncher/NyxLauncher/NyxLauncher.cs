@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 //using Microsoft.Extensions.Configuration.Ini;
 
 /**
@@ -40,7 +41,10 @@ namespace NyxLauncher
         private string m_gamePath           ;
         private string m_modScriptsPath     ;
         private string m_modINIPath         ;
+        private string m_gameFolderPath     ;
 
+        //public delegate void AddListItem();
+        //public AddListItem myDelegate;
         private FileSystemWatcher m_watcher ;
         private FileSystemWatcher m_watcherINI;
         private Image m_imgCheckBox = 
@@ -82,6 +86,7 @@ namespace NyxLauncher
             Label VerText = (Label)this.Controls[9];
             VerText.Text = "Version: " + ver;
 
+            // Check - exist path or not
             if (Properties.Settings.Default.GAME_PATH != "null")
             {
                 m_gamePath = Properties.Settings.Default.GAME_PATH;
@@ -91,6 +96,7 @@ namespace NyxLauncher
                 string _pathMod = m_gamePath.Substring(0, _num);
 
                 m_modINIPath = _pathMod + m_ININame;
+                m_gameFolderPath = _pathMod;
 
                 Button m_pathButton = (Button)this.Controls[4];
                 m_pathButton.Text = m_gamePath;
@@ -102,6 +108,8 @@ namespace NyxLauncher
                 // INI
                 GetINIInfo();
             }
+
+            //myDelegate = new AddListItem(GetINIInfo);
 
         }
 
@@ -161,16 +169,70 @@ namespace NyxLauncher
             UpdateRowList();
         }
 
+        // Change INI file
+        private void ChangeINIFile()
+        {
+            m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+
+            // Write file
+            string[] _iniLines = new string[(m_rows.Count * 4) + 1];
+            for (int i = 0; i < m_rows.Count; i++)
+            {
+                _iniLines[4 * i] = "[" + m_rows[i].name + "]";
+                if (m_rows[i].toggle == 1)
+                {
+                    m_rows[i].toggle = 0;
+                }
+                else
+                {
+                    m_rows[i].toggle = 1;
+                }
+                _iniLines[4 * i + 1] = "Banned = " + m_rows[i].toggle;
+                _iniLines[4 * i + 2] = "LoadOrder = " + m_rows[i].priority;
+                _iniLines[4 * i + 3] = "";
+            }
+            _iniLines[(m_rows.Count * 4)] = "";
+
+            File.WriteAllLines(m_modINIPath, _iniLines);
+        }
+
+        // Clear row list
+        private void ClearRowList()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                // 0 - togglebox, 1 - name, 2 - scrollpanel
+                Panel m_list_panel = (Panel)this.Controls[5].Controls[i];
+                m_list_panel.Controls[1].MaximumSize = new Size(220, 0);
+                m_list_panel.Visible = false;
+
+                Panel _switchPanel = (Panel)m_list_panel.Controls[2];
+                _switchPanel.Visible = false;
+            }
+        }
+
         // Update row list
         private void UpdateRowList()
         {
+            // Clear row list
+            ClearRowList();
+
+            // Check current cursor position
+            if (m_selectedPos > m_rows.Count - 1)
+            {
+                SetSelectPos(m_rows.Count - 1);
+            }
+            else if (m_selectedPos < 0)
+            {
+                SetSelectPos(0);
+            }
+
             if (m_rows.Count <= 10)
             {
                 for(int i = 0; i < m_rows.Count; i++)
                 {
                     // 0 - togglebox, 1 - name, 2 - scrollpanel
                     Panel m_list_panel = (Panel)this.Controls[5].Controls[i];
-                    m_list_panel.Visible = true;
 
                     // Button
                     Button _checkBox = (Button)m_list_panel.Controls[0];
@@ -180,9 +242,63 @@ namespace NyxLauncher
                     Label _name = (Label)m_list_panel.Controls[1];
                     _name.Text = m_rows[i].name;
                     _name.MaximumSize = new Size(220, 0);
+
+                    if (m_selectedPos == i && canBeManagment)
+                    {
+                        Panel _switchPanel = (Panel)m_list_panel.Controls[2];
+                        _switchPanel.Visible = true;
+                        m_list_panel.Controls[1].MaximumSize = new Size(170, 0);
+
+                        m_panelSelect = m_list_panel;
+                    }
+
+                    m_list_panel.Visible = true;
                 }
             }
             canBeManagment = true;
+        }
+
+        // Get preview.png in mod folder    - used 2
+        private void GetPreviewPng()
+        {
+            PictureBox _imagePreview = (PictureBox)this.Controls[2].Controls[0];
+
+            if (_imagePreview.BackgroundImage != null)
+                _imagePreview.BackgroundImage.Dispose();
+
+            if (!canBeManagment) return;
+            if (m_selectedPos == null) return;
+
+            _imagePreview.BackgroundImage = Image.FromFile(
+                m_modScriptsPath + "/" 
+                + m_rows[m_selectedPos].name + "/" 
+                + "preview.png");
+
+        }
+
+        // Get info.txt in mod folder       - used 1
+        private void GetTextModInfo()
+        {
+            Label _textPreview = (Label)this.Controls[1].Controls[0];
+            _textPreview.Text = "";
+
+            if (!canBeManagment) return;
+            if (m_selectedPos == null) return;
+
+            _textPreview.Text = File.ReadAllText(
+                m_modScriptsPath + "/"
+                + m_rows[m_selectedPos].name + "/"
+                + "info.txt");
+        }
+
+        // Set select pos
+        private void SetSelectPos(int pos)
+        {
+            m_selectedPos = pos;
+
+            // Get info mod
+            GetTextModInfo();
+            GetPreviewPng();
         }
 
         // Create file watcher
@@ -233,22 +349,15 @@ namespace NyxLauncher
             }
 
             // So, now we create new object
-            m_watcherINI = new FileSystemWatcher(m_modScriptsPath);
+            m_watcherINI = new FileSystemWatcher(m_gameFolderPath);
             // Filter?
-            m_watcherINI.NotifyFilter = //NotifyFilters.Attributes
-                                     //| NotifyFilters.CreationTime
-                                  //NotifyFilters.DirectoryName
-                                 //| NotifyFilters.FileName;
-            //| NotifyFilters.LastAccess
-            //| NotifyFilters.LastWrite
-            //| NotifyFilters.Security
-             NotifyFilters.Size;
+            m_watcherINI.NotifyFilter = NotifyFilters.Size;
 
             // Events
             m_watcherINI.Changed += OnINIChanged;
             m_watcherINI.Created += OnINICreated;
             m_watcherINI.Deleted += OnINIDeleted;
-            m_watcherINI.Renamed += OnINIRenamed;
+            //m_watcherINI.Renamed += OnINIRenamed;
             // Idk realy
             m_watcherINI.Filter = "*.ini";   // Check all files
             m_watcherINI.IncludeSubdirectories = false;
@@ -292,31 +401,51 @@ namespace NyxLauncher
         // ini changed
         private void OnINIChanged(object sender, FileSystemEventArgs e)
         {
-            if (DEBUG)
-                Console.WriteLine(e.Name);
+            if (DEBUG) Console.WriteLine(e.Name);
+
+            if (e.Name != m_ININame) return;
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.GetINIInfo();
+            });
 
         }
 
         // ini Created
         private void OnINICreated(object sender, FileSystemEventArgs e)
         {
-            if (DEBUG)
-                Console.WriteLine(e.Name);
+            if (DEBUG) Console.WriteLine(e.Name);
+
+            if (e.Name != m_ININame) return;
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.GetINIInfo();
+            });
         }
 
         // ini Deleted
         private void OnINIDeleted(object sender, FileSystemEventArgs e)
         {
-            if (DEBUG)
-                Console.WriteLine(e.Name);
+            if (DEBUG) Console.WriteLine(e.Name);
+
+            if (e.Name != m_ININame) return;
+
+            //TODO: SOmething code
         }
 
         // ini Renamed
+        /*
         private void OnINIRenamed(object sender, FileSystemEventArgs e)
         {
-            if (DEBUG)
-                Console.WriteLine(e.Name);
+            if (DEBUG) Console.WriteLine(e.Name);
+
+            if (e.Name != m_ININame) return;
+
+            GetINIInfo();
         }
+        */
 
         // Change game folder
         private void OnChangeFolder(object sender, EventArgs e)
@@ -367,6 +496,7 @@ namespace NyxLauncher
 
                 m_modScriptsPath = _pathMod + m_modFoldName ;
                 m_modINIPath     = _pathMod + m_ININame     ;
+                m_gameFolderPath = _pathMod;
 
                 // So, now we change button text
                 Button m_pathButton = (Button)this.Controls[4];
@@ -392,6 +522,11 @@ namespace NyxLauncher
         {
             if (m_gamePath == null) return;
 
+            //ProcessStartInfo startInfo = new ProcessStartInfo(m_gamePath);
+            //startInfo.CreateNoWindow = false;
+           // startInfo.UseShellExecute = false;
+            //startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
             try
             {
                 // Start the process with the info we specified.
@@ -411,7 +546,7 @@ namespace NyxLauncher
         }
 
         // Change box val
-        private void ChangeToggleBox(Button _checkBox, int value)
+        private void ChangeToggleBox(Button _checkBox, int value)   // That fucntion for only set val
         {
             if (value == 1)
             {
@@ -423,43 +558,64 @@ namespace NyxLauncher
             }
         }
 
-        private void ChangeToggleBox(Button _checkBox, bool value)
+        private bool ChangeToggleBox(Button _checkBox, bool value)
         {
             if (value == false)
             {
+                _checkBox.Image.Dispose();
                 _checkBox.Image = null;
                 _checkBox.Tag = false;
+                return false;
             }
             else
             {
                 _checkBox.Image = m_imgCheckBox;
                 _checkBox.Tag = true;
+                return true;
             }
         }
 
-        private void ChangeToggleBox(Button _checkBox)
+        private bool ChangeToggleBox(Button _checkBox)
         {
             if ((bool)_checkBox.Tag == true)
             {
+                _checkBox.Image.Dispose();
                 _checkBox.Image = null;
                 _checkBox.Tag = false;
+                return false;
             }
             else
             {
                 _checkBox.Image = m_imgCheckBox;
                 _checkBox.Tag = true;
+                return true;
             }
         }
         
         // Check box event handler
         private void OnToggleBoxChanged(object sender, EventArgs e)
         {
-            if (DEBUG)
-                Console.WriteLine("CheckBox pressed");
+            if (DEBUG) Console.WriteLine("CheckBox pressed");
+            if (!canBeManagment) return;
 
             Button _checkBox = (Button)sender;
-            ChangeToggleBox(_checkBox);
+            bool _result = ChangeToggleBox(_checkBox);
 
+            string[] _panelName = _checkBox.Parent.Name.Split('_');
+            int _pos = int.Parse(_panelName[1]);
+            int _newState;
+
+            if (_result)
+            {
+                _newState = 1;
+            }
+            else
+            {
+                _newState = 0;
+            }
+            m_rows[_pos].toggle = _newState;
+
+            ChangeINIFile();
         }
 
         // Check box event handler
@@ -486,7 +642,7 @@ namespace NyxLauncher
             m_panelSelect = _panel;
 
             string[] _pos_selected = _panel.Name.Split('_');
-            m_selectedPos = m_rowPos + (int.Parse(_pos_selected[1]));
+            SetSelectPos(m_rowPos + (int.Parse(_pos_selected[1])));
         }
 
         // Check box text event handler
@@ -513,7 +669,7 @@ namespace NyxLauncher
             m_panelSelect = (Panel)_panel.Parent;
 
             string[] _pos_selected = _panel.Parent.Name.Split('_');
-            m_selectedPos = m_rowPos + (int.Parse(_pos_selected[1]));
+            SetSelectPos(m_rowPos + (int.Parse(_pos_selected[1])));
         }
 
         // Check mouse position in panel
@@ -567,12 +723,28 @@ namespace NyxLauncher
         private void OnPriorityUp(object sender, EventArgs e)
         {
             if (!canBeManagment) return;
+            if ((m_selectedPos + 1) > (m_rows.Count - 1)) return;
+
+            // Change order
+            m_rows[m_selectedPos+1].priority--;
+            m_rows[m_selectedPos].priority++;
+            SetSelectPos(m_selectedPos + 1);
+
+            ChangeINIFile();
         }
 
         // Change priority down
         private void OnPriorityDown(object sender, EventArgs e)
         {
             if (!canBeManagment) return;
+            if ((m_selectedPos - 1) < (0)) return;
+
+            // Change order
+            m_rows[m_selectedPos-1].priority++;
+            m_rows[m_selectedPos].priority--;
+            SetSelectPos(m_selectedPos - 1);
+
+            ChangeINIFile();
         }
 
         // Shity code. Idk how Studio generate this shit...

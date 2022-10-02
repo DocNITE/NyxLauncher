@@ -12,21 +12,20 @@ using System.IO;
 
 namespace NyxLauncher
 {
-    class CModRow
+    class ModRow
     {
         public string name;
-        public bool enabled;
+        public int priority;
+        public int toggle;
 
-        private Panel m_panel;
-
-        public CModRow()
+        public ModRow()
         {
 
         }
 
-        ~CModRow()
+        ~ModRow()
         {
-            m_panel.Dispose();
+
         }
     }
 }

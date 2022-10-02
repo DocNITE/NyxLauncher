@@ -562,7 +562,9 @@ namespace NyxLauncher
         {
             if (value == false)
             {
-                _checkBox.Image.Dispose();
+                //if (_checkBox.Image != null)
+                //   _checkBox.Image.Dispose();
+
                 _checkBox.Image = null;
                 _checkBox.Tag = false;
                 return false;
@@ -579,7 +581,9 @@ namespace NyxLauncher
         {
             if ((bool)_checkBox.Tag == true)
             {
-                _checkBox.Image.Dispose();
+                //if (_checkBox.Image != null)
+                //    _checkBox.Image.Dispose();
+
                 _checkBox.Image = null;
                 _checkBox.Tag = false;
                 return false;

@@ -83,7 +83,7 @@ namespace NyxLauncher
 
             Version ver = thisAssemName.Version;
 
-            Label VerText = (Label)this.Controls[9];
+            Label VerText = (Label)this.Controls[8];
             VerText.Text = "Version: " + ver;
 
             // Check - exist path or not
@@ -227,43 +227,72 @@ namespace NyxLauncher
                 SetSelectPos(0);
             }
 
+            // Check curr rowPos pos
+            if ((m_rowPos + 9) > (m_rows.Count - 1))         // Shity code
+            {
+                m_rowPos = (m_rows.Count - 1);
+            }
+            else if (m_rowPos < 0)
+            {
+                m_rowPos = 0;
+            }
+
+            // If we have smaller 10 elements
             if (m_rows.Count <= 10)
             {
                 // Disable ScrollBoard panel
                 this.Controls[0].Visible = false;
 
+                // Set row pos 
+                m_rowPos = 0;
+
                 for (int i = 0; i < m_rows.Count; i++)
                 {
-                    // 0 - togglebox, 1 - name, 2 - scrollpanel
-                    Panel m_list_panel = (Panel)this.Controls[5].Controls[i];
-
-                    // Button
-                    Button _checkBox = (Button)m_list_panel.Controls[0];
-                    ChangeToggleBox(_checkBox, m_rows[i].toggle);
-
-                    // Name
-                    Label _name = (Label)m_list_panel.Controls[1];
-                    _name.Text = m_rows[i].name;
-                    _name.MaximumSize = new Size(220, 0);
-
-                    if (m_selectedPos == i && canBeManagment)
-                    {
-                        Panel _switchPanel = (Panel)m_list_panel.Controls[2];
-                        _switchPanel.Visible = true;
-                        m_list_panel.Controls[1].MaximumSize = new Size(170, 0);
-
-                        m_panelSelect = m_list_panel;
-                    }
-
-                    m_list_panel.Visible = true;
+                    ShowModPanel(i);
                 }
             }
             else
-            { 
+            {
+                // Disable ScrollBoard panel
+                this.Controls[0].Visible = true;
 
+                for (int i = m_rowPos; i < (m_rowPos + 10); i++)
+                {
+                    ShowModPanel(i);
+                }
             }
 
             canBeManagment = true;
+        }
+
+        // Show mod panel
+        private void ShowModPanel(int id)
+        {
+            // just var
+            int i = id;
+
+            // 0 - togglebox, 1 - name, 2 - scrollpanel
+            Panel m_list_panel = (Panel)this.Controls[5].Controls[i];
+
+            // Button
+            Button _checkBox = (Button)m_list_panel.Controls[0];
+            ChangeToggleBox(_checkBox, m_rows[i].toggle);
+
+            // Name
+            Label _name = (Label)m_list_panel.Controls[1];
+            _name.Text = m_rows[i].name;
+            _name.MaximumSize = new Size(220, 0);
+
+            if (m_selectedPos == i && canBeManagment)
+            {
+                Panel _switchPanel = (Panel)m_list_panel.Controls[2];
+                _switchPanel.Visible = true;
+                m_list_panel.Controls[1].MaximumSize = new Size(170, 0);
+
+                m_panelSelect = m_list_panel;
+            }
+
+            m_list_panel.Visible = true;
         }
 
         // Get preview.png in mod folder    - used 2

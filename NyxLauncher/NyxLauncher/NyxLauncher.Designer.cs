@@ -1131,8 +1131,9 @@ namespace NyxLauncher
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NyxLauncher";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NyxLauncher";
-            this.TransparencyKey = System.Drawing.Color.Transparent;
+            this.TransparencyKey = System.Drawing.Color.Magenta;
             this.Load += new System.EventHandler(this.NyxLauncher_Load);
             this.ModList.ResumeLayout(false);
             this.ModPanel_0.ResumeLayout(false);

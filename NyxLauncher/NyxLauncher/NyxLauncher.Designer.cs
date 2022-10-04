@@ -30,7 +30,6 @@ namespace NyxLauncher
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NyxLauncher));
-            this.Character = new System.Windows.Forms.PictureBox();
             this.AppTitle = new System.Windows.Forms.Label();
             this.Play = new System.Windows.Forms.Button();
             this.ModList = new System.Windows.Forms.GroupBox();
@@ -104,7 +103,6 @@ namespace NyxLauncher
             this.ScrollPanelUp = new System.Windows.Forms.Button();
             this.ScrollBoard = new System.Windows.Forms.Panel();
             this.VerText = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.Character)).BeginInit();
             this.ModList.SuspendLayout();
             this.ModPanel_0.SuspendLayout();
             this.ScrollPanel.SuspendLayout();
@@ -131,18 +129,6 @@ namespace NyxLauncher
             this.TextBox.SuspendLayout();
             this.ScrollBoard.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // Character
-            // 
-            this.Character.BackColor = System.Drawing.Color.Transparent;
-            this.Character.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Character.Image = ((System.Drawing.Image)(resources.GetObject("Character.Image")));
-            this.Character.Location = new System.Drawing.Point(511, 172);
-            this.Character.Name = "Character";
-            this.Character.Size = new System.Drawing.Size(390, 373);
-            this.Character.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Character.TabIndex = 0;
-            this.Character.TabStop = false;
             // 
             // AppTitle
             // 
@@ -1068,7 +1054,6 @@ namespace NyxLauncher
             this.TextLabel.Name = "TextLabel";
             this.TextLabel.Size = new System.Drawing.Size(530, 144);
             this.TextLabel.TabIndex = 0;
-            this.TextLabel.Text = resources.GetString("TextLabel.Text");
             // 
             // ScrollPanelDown
             // 
@@ -1139,7 +1124,6 @@ namespace NyxLauncher
             this.Controls.Add(this.ModList);
             this.Controls.Add(this.Play);
             this.Controls.Add(this.AppTitle);
-            this.Controls.Add(this.Character);
             this.Controls.Add(this.VerText);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1150,7 +1134,6 @@ namespace NyxLauncher
             this.Text = "NyxLauncher";
             this.TransparencyKey = System.Drawing.Color.Transparent;
             this.Load += new System.EventHandler(this.NyxLauncher_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.Character)).EndInit();
             this.ModList.ResumeLayout(false);
             this.ModPanel_0.ResumeLayout(false);
             this.ModPanel_0.PerformLayout();
@@ -1193,8 +1176,6 @@ namespace NyxLauncher
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox Character;
         private System.Windows.Forms.Label AppTitle;
         private System.Windows.Forms.Button Play;
         public System.Windows.Forms.GroupBox ModList;

@@ -229,7 +229,10 @@ namespace NyxLauncher
 
             if (m_rows.Count <= 10)
             {
-                for(int i = 0; i < m_rows.Count; i++)
+                // Disable ScrollBoard panel
+                this.Controls[0].Visible = false;
+
+                for (int i = 0; i < m_rows.Count; i++)
                 {
                     // 0 - togglebox, 1 - name, 2 - scrollpanel
                     Panel m_list_panel = (Panel)this.Controls[5].Controls[i];
@@ -255,6 +258,11 @@ namespace NyxLauncher
                     m_list_panel.Visible = true;
                 }
             }
+            else
+            { 
+
+            }
+
             canBeManagment = true;
         }
 
@@ -269,11 +277,18 @@ namespace NyxLauncher
             if (!canBeManagment) return;
             if (m_selectedPos == null) return;
 
-            _imagePreview.BackgroundImage = Image.FromFile(
-                m_modScriptsPath + "/" 
-                + m_rows[m_selectedPos].name + "/" 
-                + "preview.png");
-
+            try
+            {
+                // Set file
+                _imagePreview.BackgroundImage = Image.FromFile(
+                    m_modScriptsPath + "/"
+                    + m_rows[m_selectedPos].name + "/"
+                    + "preview.png");
+            }
+            catch
+            {
+                // When not find file
+            }
         }
 
         // Get info.txt in mod folder       - used 1
@@ -285,10 +300,18 @@ namespace NyxLauncher
             if (!canBeManagment) return;
             if (m_selectedPos == null) return;
 
-            _textPreview.Text = File.ReadAllText(
-                m_modScriptsPath + "/"
-                + m_rows[m_selectedPos].name + "/"
-                + "info.txt");
+            try
+            {
+                // Set file
+                _textPreview.Text = File.ReadAllText(
+                    m_modScriptsPath + "/"
+                    + m_rows[m_selectedPos].name + "/"
+                    + "info.txt");
+            }
+            catch
+            {
+                // When does not find file
+            }
         }
 
         // Set select pos
@@ -732,9 +755,10 @@ namespace NyxLauncher
             // Change order
             m_rows[m_selectedPos+1].priority--;
             m_rows[m_selectedPos].priority++;
-            SetSelectPos(m_selectedPos + 1);
 
             ChangeINIFile();
+
+            SetSelectPos(m_selectedPos + 1);
         }
 
         // Change priority down
@@ -746,9 +770,10 @@ namespace NyxLauncher
             // Change order
             m_rows[m_selectedPos-1].priority++;
             m_rows[m_selectedPos].priority--;
-            SetSelectPos(m_selectedPos - 1);
 
             ChangeINIFile();
+
+            SetSelectPos(m_selectedPos - 1);
         }
 
         // Shity code. Idk how Studio generate this shit...

@@ -1068,6 +1068,7 @@ namespace NyxLauncher
             this.ScrollPanelDown.Size = new System.Drawing.Size(16, 16);
             this.ScrollPanelDown.TabIndex = 14;
             this.ScrollPanelDown.UseVisualStyleBackColor = false;
+            this.ScrollPanelDown.Click += new System.EventHandler(this.OnScrollPanelUp);
             // 
             // ScrollPanelUp
             // 
@@ -1082,6 +1083,7 @@ namespace NyxLauncher
             this.ScrollPanelUp.Size = new System.Drawing.Size(16, 16);
             this.ScrollPanelUp.TabIndex = 15;
             this.ScrollPanelUp.UseVisualStyleBackColor = false;
+            this.ScrollPanelUp.Click += new System.EventHandler(this.OnScrollPanelDown);
             // 
             // ScrollBoard
             // 

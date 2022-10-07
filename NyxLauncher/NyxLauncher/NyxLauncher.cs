@@ -59,6 +59,7 @@ namespace NyxLauncher
         private Panel m_oldPanel    ;
         private Panel m_panelSelect ;
         private int   m_selectedPos ;
+        private int   m_beforeSelPos;
 
         //private CModRow[] m_rows;
         //List<string> authors = new List<string>();  
@@ -217,16 +218,6 @@ namespace NyxLauncher
             // Clear row list
             ClearRowList();
 
-            // Check current cursor position
-            if (m_selectedPos > m_rows.Count - 1)
-            {
-                SetSelectPos(m_rows.Count - 1);
-            }
-            else if (m_selectedPos < 0)
-            {
-                SetSelectPos(0);
-            }
-
             // Check curr rowPos pos
             if ((m_rowPos + 9) > (m_rows.Count - 1))         // Shity code
             {
@@ -236,6 +227,18 @@ namespace NyxLauncher
             {
                 m_rowPos = 0;
             }
+
+            // Check current cursor position
+            if (m_selectedPos > (m_rows.Count - 1))
+            {
+                SetSelectPos(m_rows.Count - 1);
+            }
+            else if (m_selectedPos < 0)
+            {
+                SetSelectPos(0);
+            }
+
+            //SetSelectPos(m_selectedPos);
 
             // If we have smaller 10 elements
             if (m_rows.Count <= 10)
@@ -253,10 +256,12 @@ namespace NyxLauncher
             }
             else
             {
+                SetSelectPos(m_selectedPos);
+
                 // Disable ScrollBoard panel
                 this.Controls[0].Visible = true;
 
-                for (int i = m_rowPos; i < (m_rowPos + 10); i++)
+                for (int i = 0; i < (10); i++)
                 {
                     ShowModPanel(i);
                 }
@@ -276,14 +281,14 @@ namespace NyxLauncher
 
             // Button
             Button _checkBox = (Button)m_list_panel.Controls[0];
-            ChangeToggleBox(_checkBox, m_rows[i].toggle);
+            ChangeToggleBox(_checkBox, m_rows[m_rowPos + i].toggle);
 
             // Name
             Label _name = (Label)m_list_panel.Controls[1];
-            _name.Text = m_rows[i].name;
+            _name.Text = m_rows[m_rowPos + i].name;
             _name.MaximumSize = new Size(220, 0);
 
-            if (m_selectedPos == i && canBeManagment)
+            if (m_beforeSelPos == (m_rowPos + i) && canBeManagment)
             {
                 Panel _switchPanel = (Panel)m_list_panel.Controls[2];
                 _switchPanel.Visible = true;
@@ -311,7 +316,7 @@ namespace NyxLauncher
                 // Set file
                 _imagePreview.BackgroundImage = Image.FromFile(
                     m_modScriptsPath + "/"
-                    + m_rows[m_selectedPos].name + "/"
+                    + m_rows[m_rowPos + m_selectedPos].name + "/"
                     + "preview.png");
             }
             catch
@@ -334,7 +339,7 @@ namespace NyxLauncher
                 // Set file
                 _textPreview.Text = File.ReadAllText(
                     m_modScriptsPath + "/"
-                    + m_rows[m_selectedPos].name + "/"
+                    + m_rows[m_rowPos + m_selectedPos].name + "/"
                     + "info.txt");
             }
             catch
@@ -346,7 +351,8 @@ namespace NyxLauncher
         // Set select pos
         private void SetSelectPos(int pos)
         {
-            m_selectedPos = pos;
+            m_selectedPos   = pos;
+            m_beforeSelPos  = pos + m_rowPos;
 
             // Get info mod
             GetTextModInfo();
@@ -669,7 +675,7 @@ namespace NyxLauncher
             {
                 _newState = 0;
             }
-            m_rows[_pos].toggle = _newState;
+            m_rows[m_rowPos + _pos].toggle = _newState;
 
             ChangeINIFile();
         }
@@ -698,7 +704,7 @@ namespace NyxLauncher
             m_panelSelect = _panel;
 
             string[] _pos_selected = _panel.Name.Split('_');
-            SetSelectPos(m_rowPos + (int.Parse(_pos_selected[1])));
+            SetSelectPos(int.Parse(_pos_selected[1]));
         }
 
         // Check box text event handler
@@ -725,7 +731,8 @@ namespace NyxLauncher
             m_panelSelect = (Panel)_panel.Parent;
 
             string[] _pos_selected = _panel.Parent.Name.Split('_');
-            SetSelectPos(m_rowPos + (int.Parse(_pos_selected[1])));
+            SetSelectPos(int.Parse(_pos_selected[1]));
+            //Console.WriteLine(m_rowPos + (int.Parse(_pos_selected[1])));
         }
 
         // Check mouse position in panel
@@ -779,13 +786,15 @@ namespace NyxLauncher
         private void OnPriorityUp(object sender, EventArgs e)
         {
             if (!canBeManagment) return;
-            if ((m_selectedPos + 1) > (m_rows.Count - 1)) return;
+            if ((m_rowPos + m_selectedPos + 1) > (m_rows.Count - 1)) return;
 
             // Change order
-            m_rows[m_selectedPos+1].priority--;
-            m_rows[m_selectedPos].priority++;
+            m_rows[m_rowPos + m_selectedPos + 1].priority--;
+            m_rows[m_rowPos + m_selectedPos].priority++;
 
             ChangeINIFile();
+
+            if ((m_selectedPos + 1) > (9)) return;
 
             SetSelectPos(m_selectedPos + 1);
         }
@@ -794,15 +803,38 @@ namespace NyxLauncher
         private void OnPriorityDown(object sender, EventArgs e)
         {
             if (!canBeManagment) return;
-            if ((m_selectedPos - 1) < (0)) return;
+            if (( (m_rowPos + m_selectedPos) - 1) < (0)) return;
 
             // Change order
-            m_rows[m_selectedPos-1].priority++;
-            m_rows[m_selectedPos].priority--;
+            m_rows[(m_rowPos + m_selectedPos) - 1].priority++;
+            m_rows[m_rowPos + m_selectedPos].priority--;
 
             ChangeINIFile();
 
+            if ((m_selectedPos - 1) < 0) return;
+
             SetSelectPos(m_selectedPos - 1);
+        }
+
+        // Scroll up
+        private void OnScrollPanelUp(object sender, EventArgs e)
+        {
+            if (!canBeManagment) return;
+            if ((m_rowPos + 10) > (m_rows.Count - 1)) return;
+
+            m_rowPos++;
+            UpdateRowList();
+        }
+
+        // Scroll down
+        private void OnScrollPanelDown(object sender, EventArgs e)
+        {
+
+            if (!canBeManagment) return;
+            if ((m_rowPos - 1) < (0)) return;
+
+            m_rowPos--;
+            UpdateRowList();
         }
 
         // Shity code. Idk how Studio generate this shit...

@@ -119,15 +119,7 @@ namespace NyxLauncher
                 {
                     if (GetModFolder(m_rows[i].name) == false)
                     {
-                        if (i != (m_rows.Count - 1))
-                        {
-                            for (int v = (i + 1); v < m_rows.Count; v++)
-                            {
-                                m_rows[v].priority--;
-                            }
-                        }
-                        m_rows.RemoveAt(i);
-                        m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+                        RemoveModFile(i);
 
                         _reChange = true;
                     }
@@ -207,6 +199,20 @@ namespace NyxLauncher
             newMod.priority = m_rows.Count;
 
             m_rows.Add(newMod);
+            m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+        }
+
+        // Remove mod info
+        private void RemoveModFile(int i)
+        {
+            if (i != (m_rows.Count - 1))
+            {
+                for (int v = (i + 1); v < m_rows.Count; v++)
+                {
+                    m_rows[v].priority--;
+                }
+            }
+            m_rows.RemoveAt(i);
             m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
         }
 
@@ -584,8 +590,7 @@ namespace NyxLauncher
                 {
                     if (m_rows[i].name == e.Name)
                     {
-                        m_rows.RemoveAt(i);
-                        m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+                        RemoveModFile(i);
                     }
                 }
 

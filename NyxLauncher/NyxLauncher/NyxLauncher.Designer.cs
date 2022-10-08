@@ -1096,6 +1096,7 @@ namespace NyxLauncher
             this.ScrollBoard.Name = "ScrollBoard";
             this.ScrollBoard.Size = new System.Drawing.Size(16, 354);
             this.ScrollBoard.TabIndex = 16;
+            this.ScrollBoard.Visible = false;
             // 
             // VerText
             // 

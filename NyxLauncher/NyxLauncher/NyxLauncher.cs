@@ -108,10 +108,106 @@ namespace NyxLauncher
 
                 // INI
                 GetINIInfo();
+
+                // Check deleted mod folders
+                bool _reChange = false;
+                string[] _modList = Directory.GetDirectories(m_modScriptsPath);
+                
+                char _sep = char.Parse(@"\");
+
+                for (int i = 0; i < m_rows.Count; i++)
+                {
+                    if (GetModFolder(m_rows[i].name) == false)
+                    {
+                        if (i != (m_rows.Count - 1))
+                        {
+                            for (int v = (i + 1); v < m_rows.Count; v++)
+                            {
+                                m_rows[v].priority--;
+                            }
+                        }
+                        m_rows.RemoveAt(i);
+                        m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+
+                        _reChange = true;
+                    }
+                }
+
+                // Check new mod folders
+                for (int i = 0; i < _modList.Length; i++)
+                {
+                    bool _existMod = false;
+                    string[] _currNameArr = _modList[i].Split('/', _sep);
+                    string _currName = _currNameArr[_currNameArr.Length-1];
+
+                    if (GetModFile(_currName) == true)
+                    {
+                        _existMod = true;
+                    }
+
+                    if (_existMod == false)
+                    {
+                        _reChange = true;
+
+                        AddModFile(_currName);
+                    }
+                }
+
+                if (_reChange == true)
+                {
+                    ChangeINIFile();
+                }
+
             }
 
             //myDelegate = new AddListItem(GetINIInfo);
 
+        }
+
+        // Get folder from directory
+        private bool GetModFolder(string name)
+        {
+            string[] _modList = Directory.GetDirectories(m_modScriptsPath);
+            char _sep = char.Parse(@"\");
+
+            for (int i = 0; i < _modList.Length; i++)
+            {
+                string[] _currNameArr = _modList[i].Split('/', _sep);
+                string _currName = _currNameArr[_currNameArr.Length - 1];
+
+                if (name == _currName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Get mod from row list
+        private bool GetModFile(string name)
+        {
+            for (int i = 0; i < m_rows.Count; i++)
+            {
+                if (m_rows[i].name == name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Insert mod info
+        private void AddModFile(string name)
+        {
+            ModRow newMod = new ModRow();
+            newMod.name = name;
+            newMod.toggle = 0;
+            newMod.priority = m_rows.Count;
+
+            m_rows.Add(newMod);
+            m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
         }
 
         // Get ini info
@@ -440,6 +536,28 @@ namespace NyxLauncher
         {
             if (DEBUG)
                 Console.WriteLine(e.Name);
+
+            // Check - file or folder
+            try
+            {
+                string[] isFile = e.Name.Split('.');
+
+                if (isFile[1] != null)
+                {
+
+                }
+            }
+            catch
+            {
+                // Add new mod
+                AddModFile(e.Name);
+
+                // Update list
+                this.Invoke((MethodInvoker)delegate
+                {
+                    this.ChangeINIFile();
+                });
+            }
         }
 
         // file Deleted
@@ -447,6 +565,34 @@ namespace NyxLauncher
         {
             if (DEBUG)
                 Console.WriteLine(e.Name);
+
+            // Check - file or folder
+            try
+            {
+                string[] isFile = e.Name.Split('.');
+
+                if (isFile[1] != null)
+                {
+
+                }
+            }
+            catch
+            {
+                for(int i = 0; i < m_rows.Count; i++)
+                {
+                    if (m_rows[i].name == e.Name)
+                    {
+                        m_rows.RemoveAt(i);
+                        m_rows = m_rows.OrderBy(ModRow => ModRow.priority).ToList();
+                    }
+                }
+
+                // Update list
+                this.Invoke((MethodInvoker)delegate
+                {
+                    this.ChangeINIFile();
+                });
+            }
         }
 
         // file Renamed

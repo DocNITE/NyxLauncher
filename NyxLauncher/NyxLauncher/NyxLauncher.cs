@@ -296,6 +296,8 @@ namespace NyxLauncher
         // Clear row list
         private void ClearRowList()
         {
+            this.Controls[0].Visible = false;
+
             for (int i = 0; i < 10; i++)
             {
                 // 0 - togglebox, 1 - name, 2 - scrollpanel

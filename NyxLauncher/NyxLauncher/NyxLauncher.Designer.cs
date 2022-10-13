@@ -103,6 +103,9 @@ namespace NyxLauncher
             this.ScrollPanelUp = new System.Windows.Forms.Button();
             this.ScrollBoard = new System.Windows.Forms.Panel();
             this.VerText = new System.Windows.Forms.Label();
+            this.zConsolePanel = new System.Windows.Forms.Panel();
+            this.button28 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
             this.ModList.SuspendLayout();
             this.ModPanel_0.SuspendLayout();
             this.ScrollPanel.SuspendLayout();
@@ -128,6 +131,7 @@ namespace NyxLauncher
             ((System.ComponentModel.ISupportInitialize)(this.Image1)).BeginInit();
             this.TextBox.SuspendLayout();
             this.ScrollBoard.SuspendLayout();
+            this.zConsolePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AppTitle
@@ -1111,6 +1115,42 @@ namespace NyxLauncher
             this.VerText.Text = "Version: 0.11k";
             this.VerText.Click += new System.EventHandler(this.label11_Click);
             // 
+            // zConsolePanel
+            // 
+            this.zConsolePanel.BackColor = System.Drawing.Color.Transparent;
+            this.zConsolePanel.Controls.Add(this.button28);
+            this.zConsolePanel.Controls.Add(this.label11);
+            this.zConsolePanel.Location = new System.Drawing.Point(703, 472);
+            this.zConsolePanel.Name = "zConsolePanel";
+            this.zConsolePanel.Size = new System.Drawing.Size(164, 30);
+            this.zConsolePanel.TabIndex = 18;
+            // 
+            // button28
+            // 
+            this.button28.FlatAppearance.BorderColor = System.Drawing.SystemColors.Info;
+            this.button28.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button28.Image = global::NyxLauncher.Properties.Resources.istoggle3;
+            this.button28.Location = new System.Drawing.Point(3, 7);
+            this.button28.Name = "button28";
+            this.button28.Size = new System.Drawing.Size(16, 16);
+            this.button28.TabIndex = 9;
+            this.button28.Tag = true;
+            this.button28.UseVisualStyleBackColor = true;
+            this.button28.Click += new System.EventHandler(this.OnToggleConsoleRun);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.label11.ForeColor = System.Drawing.SystemColors.Info;
+            this.label11.Location = new System.Drawing.Point(25, 5);
+            this.label11.MaximumSize = new System.Drawing.Size(170, 0);
+            this.label11.MinimumSize = new System.Drawing.Size(170, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(170, 20);
+            this.label11.TabIndex = 8;
+            this.label11.Text = "Run Console";
+            // 
             // NyxLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1128,6 +1168,7 @@ namespace NyxLauncher
             this.Controls.Add(this.Play);
             this.Controls.Add(this.AppTitle);
             this.Controls.Add(this.VerText);
+            this.Controls.Add(this.zConsolePanel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1174,6 +1215,8 @@ namespace NyxLauncher
             this.TextBox.ResumeLayout(false);
             this.TextBox.PerformLayout();
             this.ScrollBoard.ResumeLayout(false);
+            this.zConsolePanel.ResumeLayout(false);
+            this.zConsolePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1253,6 +1296,9 @@ namespace NyxLauncher
         private System.Windows.Forms.Button ScrollPanelUp;
         private System.Windows.Forms.Panel ScrollBoard;
         private System.Windows.Forms.Label VerText;
+        private System.Windows.Forms.Panel zConsolePanel;
+        private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Label label11;
     }
 }
 

@@ -46,5 +46,17 @@ namespace NyxLauncher.Properties {
                 this["MOD_PATH"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RUN_CONSOLE {
+            get {
+                return ((bool)(this["RUN_CONSOLE"]));
+            }
+            set {
+                this["RUN_CONSOLE"] = value;
+            }
+        }
     }
 }

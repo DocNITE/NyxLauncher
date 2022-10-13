@@ -87,6 +87,17 @@ namespace NyxLauncher
             Label VerText = (Label)this.Controls[8];
             VerText.Text = "Version: " + ver;
 
+            // Run console option
+            Button _run_console = (Button)this.Controls[9].Controls[0];
+            if (Properties.Settings.Default.RUN_CONSOLE == true)
+            {
+                ChangeToggleBox(_run_console, 1);
+            }
+            else
+            {
+                ChangeToggleBox(_run_console, 0);
+            }
+
             // Check - exist path or not
             if (Properties.Settings.Default.GAME_PATH != "null")
             {
@@ -735,18 +746,36 @@ namespace NyxLauncher
 
             //ProcessStartInfo startInfo = new ProcessStartInfo(m_gamePath);
             //startInfo.CreateNoWindow = false;
-           // startInfo.UseShellExecute = false;
+            // startInfo.UseShellExecute = false;
             //startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             try
             {
+                // Run console option
+                bool _run_console = (bool)this.Controls[9].Controls[0].Tag;
+
                 // Start the process with the info we specified.
                 // Call WaitForExit and then the using statement will close.
-                using (Process exeProcess = Process.Start(m_gamePath))
+                if (_run_console == false)
+                { 
+                    using (Process exeProcess = Process.Start(m_gamePath))
+                    {
+                        this.Hide();
+                        exeProcess.WaitForExit();
+                        this.Show();
+                    }
+                }
+                else   // game.exe console
                 {
-                    this.Hide();
-                    exeProcess.WaitForExit();
-                    this.Show();
+                    ProcessStartInfo startInfo = new ProcessStartInfo(m_gamePath);
+                    startInfo.Arguments = "console";
+
+                    using (Process exeProcess = Process.Start(startInfo))
+                    {
+                        this.Hide();
+                        exeProcess.WaitForExit();
+                        this.Show();
+                    }
                 }
             }
             catch
@@ -754,6 +783,18 @@ namespace NyxLauncher
                 // Log error.
                 this.Show();
             }
+        }
+
+        // Check box run console option
+        private void OnToggleConsoleRun(object sender, EventArgs e)
+        {
+            if (DEBUG) Console.WriteLine("CheckBox pressed");
+            //if (!canBeManagment) return;
+
+            Button _checkBox = (Button)this.Controls[9].Controls[0];
+            ChangeToggleBox(_checkBox);
+
+            Properties.Settings.Default.RUN_CONSOLE = (bool)_checkBox.Tag;
         }
 
         // Change box val
